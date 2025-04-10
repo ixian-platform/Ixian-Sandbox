@@ -1,13 +1,13 @@
 #!/bin/sh -e
-BASENAME=ixian-base:18.04
+BASENAME=ixian-base:24.04
 
 createBase()
 {
-	baseExists=`docker images $BASENAME -q`
-	if [ "$baseExists" = "" ]; then
-    echo "Building Ixian Base"
-		docker build -t $BASENAME ./ixian-base
-	fi
+  baseExists=`docker images $BASENAME -q`
+  if [ "$baseExists" = "" ]; then
+    echo "Building Ixian Base $BASENAME"
+    docker build -t $BASENAME ./ixian-base
+  fi
 }
 
 create()
@@ -21,12 +21,12 @@ up()
 {
   stop
   createBase
-	docker-compose -p ixian up
+  docker-compose -p ixian up -d
 }
 
 down()
 {
-	docker-compose -p ixian down
+  docker-compose -p ixian down -v
 }
 
 clean()
@@ -36,7 +36,7 @@ clean()
   read -p "Are you sure you want to continue? (y/n): " confirmation
   if [ $confirmation = "y" ]; then
     stop
-    docker-compose -p ixian down --remove-orphans
+    docker-compose -p ixian down -v --remove-orphans
     docker rmi ixian_ixian-explorer ixian_ixian-pool ixian_ixian-s2 ixian_ixian-dlt --force
   else
     exit 1
@@ -46,12 +46,12 @@ clean()
 
 start()
 {
-	docker-compose -p ixian start
+  docker-compose -p ixian start
 }
 
 stop()
 {
-	docker-compose -p ixian stop
+  docker-compose -p ixian stop
 }
 
 build()
@@ -86,11 +86,11 @@ help()
 
 sandbox()
 {
-	case $1 in
-		up)
-			shift
-			up
-			;;
+  case $1 in
+    up)
+      shift
+      up
+      ;;
 			
     down)
       shift
@@ -98,12 +98,12 @@ sandbox()
       ;;
       
     create)
-	    shift
+      shift
       create "$@"
       ;;
 
     start)
-	    shift
+      shift
       start "$@"
       ;;
 

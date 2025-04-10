@@ -1,18 +1,18 @@
-FROM ixian-base:18.04
+FROM ixian-base:24.04
 
-LABEL version="0.1"
-LABEL description="Ixian Pool with DLT Docker Container"
+LABEL version="0.2"
+LABEL description="Ixian Pool Docker Container"
 LABEL maintainer="support@ixian.io"
 
-ENV HOME /opt
-ENV NODE_ENV production
+ENV HOME=/opt
+ENV NODE_ENV=production
 
 ARG URL="https://github.com/ProjectIxian"
 ARG BRANCH="master"
 ARG SHA=
 ARG POOL_REWARD_ADDRESS="153xXfVi1sznPcRqJur8tutgrZecNVYGSzetp47bQvRfNuDix"
 ARG POOL_FEE="0.02"
-ARG POOL_URL="https://my-ixian-pool.com/"
+ARG POOL_URL="https://ixian-pool/"
 ARG POOL_NAME="My Ixian Pool"
 ARG DLT_URL="http://ixian-dlt:8081"
 

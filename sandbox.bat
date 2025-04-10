@@ -3,7 +3,7 @@
 setlocal
 title Ixian Sandbox
 
-set BASENAME=ixian-base:18.04
+set BASENAME=ixian-base:24.04
 
 call :sandbox %*
 
@@ -13,7 +13,7 @@ call :sandbox %*
   del tmp
 	IF "%baseExists%"=="" (
     echo Building Ixian Base
-		docker build -t %BASENAME% ./ixian-base
+	  docker build -t %BASENAME% ./ixian-base
 	)
 EXIT /B 0
 
@@ -27,11 +27,11 @@ EXIT /B 0
 :up
   call :stop
   call :createBase
-	docker-compose -p ixian up
+  docker-compose -p ixian up -d
 EXIT /B 0
 
 :down
-	docker-compose -p ixian down
+  docker-compose -p ixian down -v
 EXIT /B 0
 
 :clean
@@ -39,7 +39,7 @@ EXIT /B 0
   set /p confirmation="Are you sure you want to continue? (y/n): "
   IF "%confirmation%" == "y" (
     call :stop
-    docker-compose -p ixian down --remove-orphans
+    docker-compose -p ixian down -v --remove-orphans
     docker rmi ixian_ixian-pool ixian_ixian-s2 ixian_ixian-dlt --force
   ) ELSE (
     EXIT /B 1
@@ -47,11 +47,11 @@ EXIT /B 0
 EXIT /B 0
 
 :start
-	docker-compose -p ixian start
+  docker-compose -p ixian start
 EXIT /B 0
 
 :stop
-	docker-compose -p ixian stop
+  docker-compose -p ixian stop
 EXIT /B 0
 
 :build

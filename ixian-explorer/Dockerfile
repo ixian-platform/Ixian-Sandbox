@@ -1,13 +1,13 @@
-FROM ixian-base:18.04
+FROM ixian-base:24.04
 
-LABEL version="0.1"
-LABEL description="Ixian Pool with DLT Docker Container"
+LABEL version="0.2"
+LABEL description="Ixian Explorer Docker Container"
 LABEL maintainer="support@ixian.io"
 
-ENV HOME /opt
-ENV NODE_ENV production
+ENV HOME=/opt
+ENV NODE_ENV=production
 
-ARG URL="https://github.com/ProjectIxian"
+ARG URL="https://github.com/ixian-platform"
 ARG BRANCH="main"
 ARG SHA=
 ARG DLT_URL="http://ixian-dlt:8081"

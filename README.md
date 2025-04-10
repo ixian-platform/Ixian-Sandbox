@@ -3,10 +3,10 @@ Ixian Sandbox includes Ixian DLT, Ixian S2, Ixian Pool and Ixian Explorer Docker
 Ixian Pool connects to the Ixian DLT service.  
 All services in this container are pulled from GitHub and are built from source.  
 For more information about specific service, see:  
-**Ixian DLT** - https://github.com/ProjectIxian/Ixian-DLT  
-**Ixian S2** - https://github.com/ProjectIxian/Ixian-S2  
-**Ixian Pool** - https://github.com/ProjectIxian/Ixian-Pool  
-**Ixian Explorer** - https://github.com/ProjectIxian/Ixian-Explorer  
+**Ixian DLT** - https://github.com/ixian-platform/Ixian-DLT  
+**Ixian S2** - https://github.com/ixian-platform/Ixian-S2  
+**Ixian Pool** - https://github.com/ixian-platform/Ixian-Pool  
+**Ixian Explorer** - https://github.com/ixian-platform/Ixian-Explorer  
 
 
 ## Prerequisites

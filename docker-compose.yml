@@ -1,16 +1,19 @@
-version: "3.8"
 services:
-  ixian-dlt:
+  ixian-dlt-1:
     build:
       context: ./ixian-dlt/
       args:
-        URL: "https://github.com/ProjectIxian"
+        URL: "https://github.com/ixian-platform"
         BRANCH: "master"
         #SHA: ""
-        #BOOTSTRAP_URL: ""
-        #GENESIS_FILE: ""
-        #WALLET_FILE: ""
-        #WALLET_PASSWORD: ""
+    environment:
+      DLT_PORT: "10234"
+      NETWORK_TYPE: "REGTEST"
+      GENESIS_FUNDS: "100000000000"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
     ports:
       - "8081:8081"
       - "10234:10234"
@@ -18,50 +21,164 @@ services:
       - "8081"
       - "10234"
       
-  ixian-s2:
+  ixian-dlt-2:
+    build:
+      context: ./ixian-dlt/
+      args:
+        URL: "https://github.com/ixian-platform"
+        BRANCH: "master"
+        #SHA: ""
+    environment:
+      DLT_PORT: "10235"
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
+    ports:
+      - "8082:8081"
+      - "10235:10235"
+    expose:
+      - "8081"
+      - "10235"
+      
+  ixian-s2-1:
     build:
       context: ./ixian-s2/
       args:
-        URL: "https://github.com/ProjectIxian"
+        URL: "https://github.com/ixian-platform"
         BRANCH: "master"
         #SHA: ""
-        #BOOTSTRAP_URL: ""
-        #GENESIS_FILE: ""
-        #WALLET_FILE: ""
-        #WALLET_PASSWORD: ""
+    environment:
+      S2_PORT: "10236"
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
     ports:
-      - "8001:8081"
-      - "10235:10235"
+      - "8083:8081"
+      - "10236:10236"
     expose:
-      - "8001"
-      - "10235"
+      - "8081"
+      - "10236"
 
-  ixian-pool:
+  ixian-s2-2:
     build:
-      context: ./ixian-pool/
+      context: ./ixian-s2/
       args:
-        URL: "https://github.com/ProjectIxian"
+        URL: "https://github.com/ixian-platform"
         BRANCH: "master"
         #SHA: ""
-        POOL_REWARD_ADDRESS: "153xXfVi1sznPcRqJur8tutgrZecNVYGSzetp47bQvRfNuDix"
-        POOL_FEE: "0.02"
-        POOL_URL: "https://my-ixian-pool.com/"
-        POOL_NAME: "My Ixian Pool"
-        DLT_URL: "http://ixian-dlt:8081"
+    environment:
+      S2_PORT: "10237"
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
+    ports:
+      - "8084:8081"
+      - "10237:10237"
+    expose:
+      - "8081"
+      - "10237"
+
+  ixian-s2-3:
+    build:
+      context: ./ixian-s2/
+      args:
+        URL: "https://github.com/ixian-platform"
+        BRANCH: "master"
+        #SHA: ""
+    environment:
+      S2_PORT: "10238"
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
+    ports:
+      - "8085:8081"
+      - "10238:10238"
+    expose:
+      - "8081"
+      - "10238"
+
+  ixian-s2-4:
+    build:
+      context: ./ixian-s2/
+      args:
+        URL: "https://github.com/ixian-platform"
+        BRANCH: "master"
+        #SHA: ""
+    environment:
+      S2_PORT: "10239"
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
+    ports:
+      - "8086:8081"
+      - "10239:10239"
+    expose:
+      - "8081"
+      - "10239"
+      
+  ixian-s2-5:
+    build:
+      context: ./ixian-s2/
+      args:
+        URL: "https://github.com/ixian-platform"
+        BRANCH: "master"
+        #SHA: ""
+    environment:
+      S2_PORT: "10240"
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
+    ports:
+      - "8087:8081"
+      - "10240:10240"
+    expose:
+      - "8081"
+      - "10240"
+      
+  ixian-explorer:
+    build:
+      context: ./ixian-explorer/
+      args:
+        URL: "https://github.com/ixian-platform"
+        BRANCH: "main"
+        #SHA: ""
+        DLT_URL: "http://ixian-dlt-1:8081"
     ports:
       - "443:443"
     expose:
       - "443"
 
-  ixian-explorer:
+  ixian-pool:
     build:
-      context: ./ixian-explorer/
+      context: ./ixian-pool/
       args:
-        URL: "https://github.com/ProjectIxian"
-        BRANCH: "main"
+        URL: "https://github.com/ixian-platform"
+        BRANCH: "master"
         #SHA: ""
-        DLT_URL: "http://ixian-dlt:8081"
+        POOL_REWARD_ADDRESS: "153xXfVi1sznPcRqJur8tutgrZecNVYGSzetp47bQvRfNuDix"
+        POOL_FEE: "0.02"
+        POOL_URL: "https://ixian-pool/"
+        POOL_NAME: "My Ixian Pool"
+        DLT_URL: "http://ixian-dlt-1:8081"
     ports:
       - "444:443"
     expose:
-      - "443"
+      - "444"

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 if [ -f "/opt/update.next" ]; then
   apt-get update --yes
   apt-get upgrade --yes
@@ -18,7 +18,7 @@ if [ -f "/opt/update.next" ]; then
   rm ~/update.next
 fi
 
-service mysql restart
+service mariadb restart
 service apache2 restart
 service cron restart
 

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 if [ $# -ne 8 ]; then
 	echo "Setup requires 8 parameters"
   exit 1
@@ -24,7 +24,7 @@ apt-get install apache2 -y
 apt-get install php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath -y
 apt-get install mariadb-server -y
 
-service mysql restart
+service mariadb restart
 
 a2enmod ssl
 a2enmod rewrite
@@ -35,8 +35,8 @@ service apache2 restart
 echo "Fetching Ixian-Pool"
 git clone -b "$BRANCH" "$URL/Ixian-Pool.git"
 
-cp -R /opt/Ixian/Ixian-Pool/www/. /var/www/html/
-rm /var/www/html/index.html
+rm -rf /var/www/html
+ln -s /opt/Ixian/Ixian-Pool/www /var/www/html
 
 sed -i "/^\$db_host\s*=.*/ s//\$db_host = \"localhost\";/" /var/www/html/config.php
 sed -i "/^\$db_user\s*=.*/ s//\$db_user = \"ixian\";/" /var/www/html/config.php

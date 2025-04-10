@@ -1,20 +1,23 @@
-version: "3.8"
 services:
   ixian-s2:
     build:
       context: .
       dockerfile: ./Dockerfile
       args:
-        URL: "https://github.com/ProjectIxian"
+        URL: "https://github.com/ixian-platform"
         #BRANCH: "master"
         #SHA: ""
-        #BOOTSTRAP_URL: ""
-        #GENESIS_FILE: ""
-        #WALLET_FILE: ""
-        #WALLET_PASSWORD: ""
+    environment:
+      S2_PORT: "10236"
+      NETWORK_TYPE: "MAINNET"
+      #SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
     ports:
-      - "8001:8081"
-      - "10235:10235"
+      - "8083:8081"
+      - "10236:10236"
     expose:
       - "8081"
-      - "10235"
+      - "10236"

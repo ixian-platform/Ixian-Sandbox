@@ -46,3 +46,4 @@ mysql explorer01 < /opt/Ixian/Ixian-Explorer/explorer.sql
 
 crontab -l | { cat; echo "*/1 * * * * cd /var/www/html/internal && /usr/bin/php fetchstatus.php > /dev/null"; } | crontab -
 crontab -l | { cat; echo "*/1 * * * * cd /var/www/html/internal && /usr/bin/php sync.php > /dev/null"; } | crontab -
+crontab -l | { cat; echo "*/5 * * * * cd /var/www/html/internal && /usr/bin/php updatetxstats.php > /dev/null"; } | crontab -

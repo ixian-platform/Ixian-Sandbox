@@ -11,7 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
-BASENAME=ixian-base:24.04
+BASENAME=ixian-base:24.04-0.3
 
 createBase()
 {

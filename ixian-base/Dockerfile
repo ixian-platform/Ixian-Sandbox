@@ -1,8 +1,7 @@
-FROM ubuntu:24.04 AS ixian-base
+FROM ubuntu:noble-20250415.1 AS ixian-base
 
-LABEL version="0.2"
+LABEL version="0.3"
 LABEL description="Ixian Base Docker Container"
-LABEL maintainer="support@ixian.io"
 
 ENV HOME=/opt
 ENV NODE_ENV=production

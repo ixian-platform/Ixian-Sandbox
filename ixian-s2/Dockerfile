@@ -1,4 +1,4 @@
-FROM ixian-base:24.04
+FROM ixian-base:24.04-0.3
 
 LABEL version="0.3"
 LABEL description="Ixian S2 Docker Container"
@@ -15,4 +15,4 @@ COPY . /opt
 WORKDIR /opt
 RUN sh /opt/install.sh "${URL}" "${CORE_BRANCH}" "${S2_BRANCH}" "${SHA}"
 
-ENTRYPOINT /opt/start.sh
+ENTRYPOINT ["/opt/start.sh"]

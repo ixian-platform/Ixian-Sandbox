@@ -1,13 +1,12 @@
-FROM ixian-base:24.04
+FROM ixian-base:24.04-0.3
 
-LABEL version="0.2"
+LABEL version="0.3"
 LABEL description="Ixian Pool Docker Container"
-LABEL maintainer="support@ixian.io"
 
 ENV HOME=/opt
 ENV NODE_ENV=production
 
-ARG URL="https://github.com/ProjectIxian"
+ARG URL="https://github.com/ixian-platform"
 ARG BRANCH="master"
 ARG SHA=
 ARG POOL_REWARD_ADDRESS="153xXfVi1sznPcRqJur8tutgrZecNVYGSzetp47bQvRfNuDix"
@@ -20,4 +19,4 @@ COPY . /opt
 WORKDIR /opt
 RUN sh /opt/install.sh "${URL}" "${BRANCH}" "${SHA}" "${POOL_REWARD_ADDRESS}" "${POOL_FEE}" "${POOL_NAME}" "${POOL_URL}" "${DLT_URL}"
 
-ENTRYPOINT /opt/start.sh
+ENTRYPOINT ["/opt/start.sh"]

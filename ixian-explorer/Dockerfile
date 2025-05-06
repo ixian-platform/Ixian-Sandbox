@@ -1,8 +1,7 @@
-FROM ixian-base:24.04
+FROM ixian-base:24.04-0.3
 
-LABEL version="0.2"
+LABEL version="0.3"
 LABEL description="Ixian Explorer Docker Container"
-LABEL maintainer="support@ixian.io"
 
 ENV HOME=/opt
 ENV NODE_ENV=production
@@ -16,4 +15,4 @@ COPY . /opt
 WORKDIR /opt
 RUN sh /opt/install.sh "${URL}" "${BRANCH}" "${SHA}" "${DLT_URL}"
 
-ENTRYPOINT /opt/start.sh
+ENTRYPOINT ["/opt/start.sh"]

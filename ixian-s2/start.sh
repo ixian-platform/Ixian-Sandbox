@@ -32,12 +32,15 @@ if [ "$S2_PORT" = "" ]; then
   S2_PORT="10234"
 fi
 
-if [ "$NETWORK_TYPE" == "MAINNET" ]; then
-  ./IxianS2 --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT
+#IP=`ifconfig | grep inet | cut -d\t -f2 | cut -d" " -f2 | head -n 1`
+#HOSTNAME=`dig -x $IP +short`
+
+if [ "$NETWORK_TYPE" = "MAINNET" ]; then
+  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT
 elif [ "$NETWORK_TYPE" = "TESTNET" ]; then
-  ./IxianS2 --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t
+  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t
 elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
-  ./IxianS2 --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t
+  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t
 else
   echo "Error, no NETWORK_TYPE is specified."
 fi

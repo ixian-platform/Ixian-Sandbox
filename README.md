@@ -1,7 +1,8 @@
 # Ixian Sandbox Docker Images
 Ixian Sandbox includes Ixian DLT, Ixian S2, Ixian Pool and Ixian Explorer Docker images.  
-Ixian Pool connects to the Ixian DLT service.  
+Ixian Pool and Explorer connect to Ixian DLT nodes in this Sandbox.  
 All services in this container are pulled from GitHub and are built from source.  
+Provided docker-compose.yml is configured to run the services in REGTEST network mode.  
 For more information about specific service, see:  
 **Ixian DLT** - https://github.com/ixian-platform/Ixian-DLT  
 **Ixian S2** - https://github.com/ixian-platform/Ixian-S2  
@@ -14,21 +15,22 @@ To run the Ixian Sandbox docker container you will need to install Docker Compos
 
 
 ## How to use
-Unix/Bash: To build and start the container, execute the following  
+To build and start the Ixian sandbox in REGTEST mode, execute the following:  
 ```
 ./sandbox up
 ```
-
-Windows: To build and start the container, execute the following  
-```
-sandbox.bat up
-```
-
-Once the sandbox is started, you can access the services using your web browser:  
+  
+Once the sandbox is started, you can access the API services using your web browser:  
 Ixian DLT: http://localhost:8081/  
-Ixian S2: http://localhost:8001/  
-Ixian Pool: https://localhost:443/  
-Ixian Explorer: https://localhost:444/  
+Ixian DLT 2nd node: http://localhost:8082/  
+Ixian S2: http://localhost:8600/ to http://localhost:8610/  
+Ixian Explorer: https://localhost:443/  
+Ixian Pool: https://localhost:444/  
+  
+P2P ports accessible from host:  
+Ixian DLT: localhost:10234  
+Ixian DLT 2nd node: localhost:10235  
+Ixian S2: localhost:10600-10610  
 
 
 ## Sandbox commands

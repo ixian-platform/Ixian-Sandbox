@@ -33,19 +33,19 @@ if [ "$DLT_PORT" = "" ]; then
 fi
 
 if [ "$NETWORK_TYPE" = "MAINNET" ]; then
-  ./IxianDLT --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT
+  ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT
 elif [ "$NETWORK_TYPE" = "TESTNET" ]; then
-  ./IxianDLT --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t
+  ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t
 elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
   if [ "$GENESIS_FUNDS" != "" ]; then
     if [ -d "data-testnet" ]; then
       # Genesis already generated
-      ./IxianDLT --walletPassword "$WALLET_PASSWORD" -p $DLT_PORT --recover -t
+      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -p $DLT_PORT --recover -t
     else
-      ./IxianDLT --walletPassword "$WALLET_PASSWORD" -p $DLT_PORT --genesis "$GENESIS_FUNDS" -t
+      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -p $DLT_PORT --genesis "$GENESIS_FUNDS" -t
     fi
   else
-    ./IxianDLT --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t
+    ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t
   fi
 else
   echo "Error, no NETWORK_TYPE is specified."

@@ -1,10 +1,12 @@
 services:
   ixian-dlt-1:
+    hostname: ixian-dlt-1
     build:
       context: ./ixian-dlt/
       args:
         URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
+        CORE_BRANCH: "${CORE_BRANCH}"
+        DLT_BRANCH: "${DLT_BRANCH}"
         #SHA: ""
     environment:
       DLT_PORT: "10234"
@@ -22,11 +24,13 @@ services:
       - "10234"
       
   ixian-dlt-2:
+    hostname: ixian-dlt-2
     build:
       context: ./ixian-dlt/
       args:
         URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
+        CORE_BRANCH: "${CORE_BRANCH}"
+        DLT_BRANCH: "${DLT_BRANCH}"
         #SHA: ""
     environment:
       DLT_PORT: "10235"
@@ -42,13 +46,17 @@ services:
     expose:
       - "8081"
       - "10235"
+    #deploy:
+    #  mode: replicated
+    #  replicas: 6
       
-  ixian-s2-1:
+  ixian-s2:
     build:
       context: ./ixian-s2/
       args:
         URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
+        CORE_BRANCH: "${CORE_BRANCH}"
+        S2_BRANCH: "${S2_BRANCH}"
         #SHA: ""
     environment:
       S2_PORT: "10236"
@@ -59,99 +67,14 @@ services:
       #WALLET_FILE: ""
       #WALLET_PASSWORD: ""
     ports:
-      - "8083:8081"
-      - "10236:10236"
+      - "8600-8610:8081"
+      - "10600-10610:10236"
     expose:
       - "8081"
       - "10236"
-
-  ixian-s2-2:
-    build:
-      context: ./ixian-s2/
-      args:
-        URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
-        #SHA: ""
-    environment:
-      S2_PORT: "10237"
-      NETWORK_TYPE: "REGTEST"
-      SEED_NODE: "ixian-dlt-1:10234"
-      #BOOTSTRAP_URL: ""
-      #GENESIS_FILE: ""
-      #WALLET_FILE: ""
-      #WALLET_PASSWORD: ""
-    ports:
-      - "8084:8081"
-      - "10237:10237"
-    expose:
-      - "8081"
-      - "10237"
-
-  ixian-s2-3:
-    build:
-      context: ./ixian-s2/
-      args:
-        URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
-        #SHA: ""
-    environment:
-      S2_PORT: "10238"
-      NETWORK_TYPE: "REGTEST"
-      SEED_NODE: "ixian-dlt-1:10234"
-      #BOOTSTRAP_URL: ""
-      #GENESIS_FILE: ""
-      #WALLET_FILE: ""
-      #WALLET_PASSWORD: ""
-    ports:
-      - "8085:8081"
-      - "10238:10238"
-    expose:
-      - "8081"
-      - "10238"
-
-  ixian-s2-4:
-    build:
-      context: ./ixian-s2/
-      args:
-        URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
-        #SHA: ""
-    environment:
-      S2_PORT: "10239"
-      NETWORK_TYPE: "REGTEST"
-      SEED_NODE: "ixian-dlt-1:10234"
-      #BOOTSTRAP_URL: ""
-      #GENESIS_FILE: ""
-      #WALLET_FILE: ""
-      #WALLET_PASSWORD: ""
-    ports:
-      - "8086:8081"
-      - "10239:10239"
-    expose:
-      - "8081"
-      - "10239"
-      
-  ixian-s2-5:
-    build:
-      context: ./ixian-s2/
-      args:
-        URL: "https://github.com/ixian-platform"
-        BRANCH: "master"
-        #SHA: ""
-    environment:
-      S2_PORT: "10240"
-      NETWORK_TYPE: "REGTEST"
-      SEED_NODE: "ixian-dlt-1:10234"
-      #BOOTSTRAP_URL: ""
-      #GENESIS_FILE: ""
-      #WALLET_FILE: ""
-      #WALLET_PASSWORD: ""
-    ports:
-      - "8087:8081"
-      - "10240:10240"
-    expose:
-      - "8081"
-      - "10240"
+    deploy:
+      mode: replicated
+      replicas: 10
       
   ixian-explorer:
     build:

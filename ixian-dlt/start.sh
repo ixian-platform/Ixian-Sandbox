@@ -32,20 +32,24 @@ if [ "$DLT_PORT" = "" ]; then
   DLT_PORT="10234"
 fi
 
+if [ "$IXI_CHECKSUMLOCK" = "" ]; then
+  IXI_CHECKSUMLOCK="DOCKER"
+fi
+
 if [ "$NETWORK_TYPE" = "MAINNET" ]; then
-  ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT
+  ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT --checksumLock $IXI_CHECKSUMLOCK
 elif [ "$NETWORK_TYPE" = "TESTNET" ]; then
-  ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t
+  ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t --checksumLock $IXI_CHECKSUMLOCK
 elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
   if [ "$GENESIS_FUNDS" != "" ]; then
     if [ -d "data-testnet" ]; then
       # Genesis already generated
-      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --recover -t
+      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --recover -t --checksumLock $IXI_CHECKSUMLOCK
     else
-      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --genesis "$GENESIS_FUNDS" -t
+      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --genesis "$GENESIS_FUNDS" -t --checksumLock $IXI_CHECKSUMLOCK
     fi
   else
-    ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t
+    ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t --checksumLock $IXI_CHECKSUMLOCK
   fi
 else
   echo "Error, no NETWORK_TYPE is specified."

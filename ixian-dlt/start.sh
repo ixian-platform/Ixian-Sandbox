@@ -1,13 +1,13 @@
 #!/bin/sh -e
-if [ -f "~/update.next" ]; then
+if [ -f "update.next" ]; then
   apt-get update --yes
   apt-get upgrade --yes
   
   cd ~/Ixian/Ixian-Core
-  git pull
+  git pull --rebase
 
   cd ~/Ixian/Ixian-DLT
-  git pull
+  git pull --rebase
 
   sh rebuild.sh
   rm ~/update.next
@@ -40,9 +40,9 @@ elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
   if [ "$GENESIS_FUNDS" != "" ]; then
     if [ -d "data-testnet" ]; then
       # Genesis already generated
-      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -p $DLT_PORT --recover -t
+      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --recover -t
     else
-      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -p $DLT_PORT --genesis "$GENESIS_FUNDS" -t
+      ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --genesis "$GENESIS_FUNDS" -t
     fi
   else
     ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t

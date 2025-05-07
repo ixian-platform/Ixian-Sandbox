@@ -24,14 +24,14 @@ createBase()
 
 create()
 {
-  stop
+  echo "Creating Ixian containers..."
   createBase
   docker-compose -p ixian create
 }
 
 up()
 {
-  stop
+  echo "Creating and starting Ixian containers..."
   createBase
   docker-compose -p ixian up --no-start
   start
@@ -39,6 +39,7 @@ up()
 
 down()
 {
+  echo "Stopping and removing Ixian containers..."
   docker-compose -p ixian down -v
 }
 
@@ -48,7 +49,6 @@ clean()
   echo "Ixian Sandbox containers will be removed."
   read -p "Are you sure you want to continue? (y/n): " confirmation
   if [ $confirmation = "y" ]; then
-    stop
     docker-compose -p ixian down -v --remove-orphans --rmi all
   else
     exit 1
@@ -58,11 +58,11 @@ clean()
 
 start()
 {
-  echo "Starting containers..."
+  echo "Starting Ixian containers..."
   # We need to start containers individually due to a bug in docker compose related to
   # replicas and port forwarding to host, otherwise we could just use:
   # docker-compose -p ixian start
-  CONTAINER_IDS=`docker ps -a | grep " ixian-" | cut -d" " -f1`
+  CONTAINER_IDS=`docker ps -a --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
   for item in $CONTAINER_IDS
   do
     docker start "$item"
@@ -71,12 +71,13 @@ start()
 
 stop()
 {
+  echo "Stopping Ixian containers..."
   docker-compose -p ixian stop
 }
 
 build()
 {
-  down
+  echo "Building Ixian containers..."
   docker-compose -p ixian build
 }
 
@@ -91,6 +92,19 @@ execute()
   docker-compose -p ixian exec -T $service "$@"
 }
 
+update()
+{
+  echo "Updating Ixian containers..."
+  CONTAINER_IDS=`docker ps --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
+  for item in $CONTAINER_IDS
+  do
+    echo -n "Updating $item... "
+    docker exec "$item" "./update.sh"
+  done
+  stop
+  start
+}
+
 help()
 {
   echo -e "\x1B[1mIxian Sandbox Help:"
@@ -102,6 +116,7 @@ help()
   echo -e "  \x1B[1mbuild\t\t\x1B[0m- rebuilds the sandbox environment."
   echo -e "  \x1B[1mclean\t\t\x1B[0m- removes the container and deletes temporary files."
   echo -e "  \x1B[1mexec\t\t\x1B[0m- executes a shell command for the specified service."
+  echo -e "  \x1B[1mupdate\t\x1B[0m- triggers update command for each service."
 }
 
 sandbox()
@@ -142,6 +157,10 @@ sandbox()
 	  
     clean)
       clean
+      ;;
+
+    update)
+      update
       ;;
 
     *)

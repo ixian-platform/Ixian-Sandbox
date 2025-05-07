@@ -1,13 +1,13 @@
 #!/bin/sh -e
-if [ -f "~/update.next" ]; then
+if [ -f "update.next" ]; then
   apt-get update --yes
   apt-get upgrade --yes
 
   cd ~/Ixian/Ixian-Core
-  git pull
+  git pull --rebase
 
   cd ~/Ixian/Ixian-S2
-  git pull
+  git pull --rebase
 
   sh rebuild.sh
   rm ~/update.next

@@ -1,10 +1,10 @@
 #!/bin/sh -e
-if [ -f "/opt/update.next" ]; then
+if [ -f "update.next" ]; then
   apt-get update --yes
   apt-get upgrade --yes
 
   cd ~/Ixian/Ixian-Pool
-  git pull
+  git pull --rebase
   
   DLT_HOST=`sed -n 's/^$dlt_host\s*=\s*\"\(.*\)\"\s*;/\1/p' /var/www/html/config.php`
   POOL_FEE=`sed -n 's/^$poolfee\s*=\s*\(.*\);/\1/p' /var/www/html/config.php`

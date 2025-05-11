@@ -1,21 +1,23 @@
 #!/bin/sh -e
 # Copyright (C) 2017-2025 Ixian
-# This file is part of Ixian DLT - www.github.com/ixian-platform/Ixian-DLT
+# This file is part of Ixian Sandbox - www.github.com/ixian-platform/Ixian-Sandbox
 #
-# Ixian DLT is free software: you can redistribute it and/or modify
+# Ixian Sandbox is free software: you can redistribute it and/or modify
 # it under the terms of the MIT License as published
 # by the Open Source Initiative.
 #
-# Ixian DLT is distributed in the hope that it will be useful,
+# Ixian Sandbox is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
-BASENAME=ixian-base:24.04-0.3
+VERSION=0.4
+
+BASENAME=ixian-base:24.04-$VERSION
 
 createBase()
 {
-  baseExists=`docker images $BASENAME -q`
+  local baseExists=`docker images $BASENAME -q`
   if [ "$baseExists" = "" ]; then
     echo "Building Ixian Base $BASENAME"
     docker build -t $BASENAME ./ixian-base
@@ -62,8 +64,8 @@ start()
   # We need to start containers individually due to a bug in docker compose related to
   # replicas and port forwarding to host, otherwise we could just use:
   # docker-compose -p ixian start
-  CONTAINER_IDS=`docker ps -a --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
-  for item in $CONTAINER_IDS
+  local container_ids=`docker ps -a --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
+  for item in $container_ids
   do
     docker start "$item"
   done
@@ -78,7 +80,7 @@ stop()
 build()
 {
   echo "Building Ixian containers..."
-  docker-compose -p ixian build
+  docker-compose -p ixian build --no-cache
 }
 
 execute()
@@ -87,59 +89,126 @@ execute()
     echo "Exec command requires service and command parameters."
     exit 1
   fi
-  service=$1
+
+  local container_name=$1
   shift
-  docker-compose -p ixian exec -T $service "$@"
+  docker-compose -p ixian exec -T $container_name "$@"
 }
 
 update()
 {
+  local service_name=$1
+
   echo "Updating Ixian containers..."
-  CONTAINER_IDS=`docker ps --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
-  for item in $CONTAINER_IDS
+
+  local container_ids=`docker ps --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort | grep "$service_name"`
+  for item in $container_ids
   do
     echo -n "Updating $item... "
     docker exec "$item" "./update.sh"
+
+    echo -n "Restarting container "
+    docker restart $item
   done
-  stop
-  start
+}
+
+updateFromLocal()
+{
+  if [ $# -ne 2 ]; then
+    echo "UpdateFromLocal command requires source path and service name."
+    exit 1
+  fi
+
+  local src_path=$1
+  if ! [ -d "$src_path/Ixian-Core" ]; then
+    echo "Source path 'Ixian-Core' in '$src_path' does not exist."
+    exit 1
+  fi
+
+  local service_name=$2
+
+  echo "Updating Ixian containers '$service_name' from '$src_path'..."
+
+  local container_ids=`docker ps --format 'table {{.Names}}' | grep -i "ixian-" | sort --version-sort | grep -i "$service_name"`
+  local tar_cmd='tar --exclude=*/bin --exclude=*/obj --exclude=./.git --exclude=*/.vs --exclude=*/packages --exclude=*/TestClients --exclude=*/TestResults -c -O -C'
+  for item in $container_ids
+  do
+    echo -n "Copying files to $item... "
+
+    if echo $item | grep -iq "DLT"; then
+      $tar_cmd $src_path/Ixian-Core . | docker cp - $item:/opt/Ixian/Ixian-Core
+      $tar_cmd $src_path/Ixian-DLT . | docker cp - $item:/opt/Ixian/Ixian-DLT
+      docker exec $item sh -c 'cd /opt/Ixian/Ixian-DLT/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
+    fi
+
+    if echo $item | grep -iq "S2"; then
+      $tar_cmd $src_path/Ixian-Core . | docker cp - $item:/opt/Ixian/Ixian-Core
+      $tar_cmd $src_path/Ixian-S2 . | docker cp - $item:/opt/Ixian/Ixian-S2
+      docker exec $item sh -c 'cd /opt/Ixian/Ixian-S2/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
+    fi
+
+    if echo $item | grep -iq "Lite-Wallet"; then
+      $tar_cmd $src_path/Ixian-Core . | docker cp - $item:/opt/Ixian/Ixian-Core
+      $tar_cmd $src_path/Ixian-LiteWallet . | docker cp - $item:/opt/Ixian/Ixian-LiteWallet
+      docker exec $item sh -c 'cd /opt/Ixian/Ixian-LiteWallet/IxianLiteWallet/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
+    fi
+
+    if echo $item | grep -iq "Explorer"; then
+      $tar_cmd $src_path/Ixian-Explorer . | docker cp - $item:/var/www/html/
+    fi
+
+    if echo $item | grep -iq "Pool"; then
+      $tar_cmd $src_path/Ixian-Pool . | docker cp - $item:/var/www/html/
+    fi
+
+    echo -n "Restarting container "
+    docker restart $item
+  done
 }
 
 help()
 {
+  echo -e "Usage: ./sandbox [COMMAND] [PARAMETERS]"
+  echo
+  echo -e "Build and manage Ixian services in Docker."
+  echo
   echo -e "\x1B[1mIxian Sandbox Help:"
-  echo -e "  \x1B[1mup\t\t\x1B[0m- creates and starts the sandbox environment."
-  echo -e "  \x1B[1mcreate\t\x1B[0m- creates the sandbox environment."
-  echo -e "  \x1B[1mstart\t\t\x1B[0m- starts the sandbox environment."
-  echo -e "  \x1B[1mstop\t\t\x1B[0m- stops the sandbox environment."
-  echo -e "  \x1B[1mdown\t\t\x1B[0m- stops and destroys the sandbox environment."
-  echo -e "  \x1B[1mbuild\t\t\x1B[0m- rebuilds the sandbox environment."
-  echo -e "  \x1B[1mclean\t\t\x1B[0m- removes the container and deletes temporary files."
-  echo -e "  \x1B[1mexec\t\t\x1B[0m- executes a shell command for the specified service."
-  echo -e "  \x1B[1mupdate\t\x1B[0m- triggers update command for each service."
+  echo -e "  \x1B[1mup\t\t\t\x1B[0m- creates and starts the sandbox environment."
+  echo -e "  \x1B[1mcreate\t\t\x1B[0m- creates the sandbox environment."
+  echo -e "  \x1B[1mstart\t\t\t\x1B[0m- starts the sandbox environment."
+  echo -e "  \x1B[1mstop\t\t\t\x1B[0m- stops the sandbox environment."
+  echo -e "  \x1B[1mdown\t\t\t\x1B[0m- stops and destroys the sandbox environment."
+  echo -e "  \x1B[1mbuild\t\t\t\x1B[0m- rebuilds the sandbox environment."
+  echo -e "  \x1B[1mclean\t\t\t\x1B[0m- removes the container and deletes temporary files."
+  echo -e "  \x1B[1mexec\t\t\t\x1B[0m- executes a shell command for the specified service."
+  echo -e "  \x1B[1mupdate\t\t\x1B[0m- triggers update command for each service."
+  echo -e "  \x1B[1mupdateFromLocal\t\x1B[0m- updates and rebuilds services from local storage."
+  echo
+  echo -e "For more information about Ixian Platform visit https://www.ixian.io/"
 }
 
 sandbox()
 {
-  case $1 in
+  local sandbox_cmd=$1
+  if [ $1 ]; then
+    shift
+  fi
+
+  case $sandbox_cmd in
     up)
-      shift
       up
       ;;
 			
     down)
-      shift
       down
       ;;
       
     create)
-      shift
-      create "$@"
+      create
       ;;
 
     start)
-      shift
-      start "$@"
+      start
       ;;
 
     stop)
@@ -147,7 +216,6 @@ sandbox()
       ;;
 	  
     exec)
-      shift
       execute "$@"
       ;;
 
@@ -160,13 +228,27 @@ sandbox()
       ;;
 
     update)
-      update
+      update "$@"
+      ;;
+
+    updateFromLocal)
+      updateFromLocal "$@"
+      ;;
+
+    version)
+      echo Ixian Sandbox version $VERSION
+      ;;
+
+    help)
+      help
       ;;
 
     *)
-      if [ $1 ]; then
-        echo -e "\x1B[41mError\x1B[0m: Unknown command '$1'"
+      if [ $sandbox_cmd ]; then
+        echo -e "\x1B[41mError\x1B[0m: Unknown command '$sandbox_cmd'"
+        echo
       fi
+
       help
       ;;
   esac

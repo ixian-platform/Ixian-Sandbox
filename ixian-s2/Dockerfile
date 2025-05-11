@@ -1,6 +1,6 @@
-FROM ixian-base:24.04-0.3
+FROM ixian-base:24.04-0.4
 
-LABEL version="0.3"
+LABEL version="0.4"
 LABEL description="Ixian S2 Docker Container"
 
 ENV HOME=/opt

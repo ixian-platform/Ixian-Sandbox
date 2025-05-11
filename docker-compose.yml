@@ -76,6 +76,23 @@ services:
       mode: replicated
       replicas: 10
       
+  ixian-lite-wallet:
+    #entrypoint: [ "sleep", "infinity" ]
+    build:
+      context: ./ixian-litewallet/
+      args:
+        URL: "https://github.com/ixian-platform"
+        CORE_BRANCH: "${CORE_BRANCH}"
+        LITEWALLET_BRANCH: "${LITEWALLET_BRANCH}"
+        #SHA: ""
+    environment:
+      NETWORK_TYPE: "REGTEST"
+      SEED_NODE: "ixian-dlt-1:10234"
+      #BOOTSTRAP_URL: ""
+      #GENESIS_FILE: ""
+      #WALLET_FILE: ""
+      #WALLET_PASSWORD: ""
+
   ixian-explorer:
     build:
       context: ./ixian-explorer/

@@ -1,6 +1,6 @@
 FROM ubuntu:noble-20250415.1 AS ixian-base
 
-LABEL version="0.3"
+LABEL version="0.4"
 LABEL description="Ixian Base Docker Container"
 
 ENV HOME=/opt

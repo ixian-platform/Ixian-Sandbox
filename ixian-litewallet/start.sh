@@ -6,7 +6,7 @@ if [ -f "update.next" ]; then
   cd ~/Ixian/Ixian-Core
   git pull --rebase
 
-  cd ~/Ixian/Ixian-S2
+  cd ~/Ixian/Ixian-LiteWallet
   git pull --rebase
 
   sh rebuild.sh
@@ -14,22 +14,18 @@ if [ -f "update.next" ]; then
 fi
 
 if [ "$WALLET_FILE" != "" ]; then
-  cp $WALLET_FILE /opt/Ixian/Ixian-S2/IxianS2/bin/Release/net8.0/ixian.wal
+  cp $WALLET_FILE /opt/Ixian/Ixian-LiteWallet/IxianLiteWallet/bin/Release/net8.0/ixian.wal
 fi
 
 if [ "$WALLET_PASSWORD" = "" ]; then
   WALLET_PASSWORD="WALLETPASSWORD123"
 fi
 
-cd ~/Ixian/Ixian-S2/IxianS2/bin/Release/net8.0
+cd ~/Ixian/Ixian-LiteWallet/IxianLiteWallet/bin/Release/net8.0
 
 SEED_NODE_CMD=""
 if [ "$SEED_NODE" != "" ]; then
   SEED_NODE_CMD="-n \"$SEED_NODE\""
-fi
-
-if [ "$S2_PORT" = "" ]; then
-  S2_PORT="10234"
 fi
 
 IXI_CHECKSUMLOCK_CMD=""
@@ -39,15 +35,12 @@ elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
   IXI_CHECKSUMLOCK_CMD="--checksumLock \"DOCKER\""
 fi
 
-#IP=`ifconfig | grep inet | cut -d\t -f2 | cut -d" " -f2 | head -n 1`
-#HOSTNAME=`dig -x $IP +short`
-
 if [ "$NETWORK_TYPE" = "MAINNET" ]; then
-  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT $IXI_CHECKSUMLOCK_CMD
+  ./IxianLiteWallet --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD $IXI_CHECKSUMLOCK_CMD
 elif [ "$NETWORK_TYPE" = "TESTNET" ]; then
-  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t $IXI_CHECKSUMLOCK_CMD
+  ./IxianLiteWallet --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -t $IXI_CHECKSUMLOCK_CMD
 elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
-  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t $IXI_CHECKSUMLOCK_CMD
+  ./IxianLiteWallet --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -t $IXI_CHECKSUMLOCK_CMD
 else
   echo "Error, no NETWORK_TYPE is specified."
 fi

@@ -23,26 +23,28 @@ To build and start the Ixian sandbox in REGTEST mode, execute the following:
 Once the sandbox is started, you can access the API services using your web browser:  
 Ixian DLT: http://localhost:8081/  
 Ixian DLT 2nd node: http://localhost:8082/  
-Ixian S2: http://localhost:8600/ to http://localhost:8610/  
+Ixian S2: http://localhost:8600/ to http://localhost:8609/  
 Ixian Explorer: https://localhost:443/  
 Ixian Pool: https://localhost:444/  
   
 P2P ports accessible from host:  
 Ixian DLT: localhost:10234  
 Ixian DLT 2nd node: localhost:10235  
-Ixian S2: localhost:10600-10610  
+Ixian S2: localhost:10600-10609  
 
 
 ## Sandbox commands
-| Command     | Description                                         |
-| ----------- | --------------------------------------------------- |
-| **up**      | Creates and starts the sandbox environment.         |
-| **create**  | Creates the sandbox environment.                    |
-| **start**   | Starts the sandbox environment.                     |
-| **stop**    | Stops the sandbox environment.                      |
-| **down**    | Stops and destroys the sandbox environment.         |
-| **build**   | Rebuilds the sandbox environment.                   |
-| **clean**   | Removes the container and deletes temporary files.  |
-| **exec**    | Executes a shell command for the specified service. |
+| Command             | Description                                         |
+| ------------------- | --------------------------------------------------- |
+| **up**              | Creates and starts the sandbox environment.         |
+| **create**          | Creates the sandbox environment.                    |
+| **start**           | Starts the sandbox environment.                     |
+| **stop**            | Stops the sandbox environment.                      |
+| **down**            | Stops and destroys the sandbox environment.         |
+| **build**           | Rebuilds the sandbox environment.                   |
+| **clean**           | Removes the container and deletes temporary files.  |
+| **exec**            | Executes a shell command for the specified service. |
+| **update**          | Updates container(s) from GitHub.                   |
+| **updateFromLocal** | Updates container(s) from host/local storage.       |
 
 

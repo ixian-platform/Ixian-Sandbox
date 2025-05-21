@@ -15,12 +15,15 @@ VERSION=0.4
 
 BASENAME=ixian-base:24.04-$VERSION
 
+DOCKER_CMD="docker"
+DOCKER_COMPOSE_CMD="docker compose"
+
 createBase()
 {
-  local baseExists=`docker images $BASENAME -q`
+  local baseExists=`$DOCKER_CMD images $BASENAME -q`
   if [ "$baseExists" = "" ]; then
     echo "Building Ixian Base $BASENAME"
-    docker build -t $BASENAME ./ixian-base
+    $DOCKER_CMD build -t $BASENAME ./ixian-base
   fi
 }
 
@@ -28,21 +31,21 @@ create()
 {
   echo "Creating Ixian containers..."
   createBase
-  docker-compose -p ixian create
+  $DOCKER_COMPOSE_CMD -p ixian create
 }
 
 up()
 {
   echo "Creating and starting Ixian containers..."
   createBase
-  docker-compose -p ixian up --no-start
+  $DOCKER_COMPOSE_CMD -p ixian up --no-start
   start
 }
 
 down()
 {
   echo "Stopping and removing Ixian containers..."
-  docker-compose -p ixian down -v
+  $DOCKER_COMPOSE_CMD -p ixian down -v
 }
 
 clean()
@@ -51,7 +54,7 @@ clean()
   echo "Ixian Sandbox containers will be removed."
   read -p "Are you sure you want to continue? (y/n): " confirmation
   if [ $confirmation = "y" ]; then
-    docker-compose -p ixian down -v --remove-orphans --rmi all
+    $DOCKER_COMPOSE_CMD -p ixian down -v --remove-orphans --rmi all
   else
     exit 1
   fi
@@ -64,23 +67,23 @@ start()
   # We need to start containers individually due to a bug in docker compose related to
   # replicas and port forwarding to host, otherwise we could just use:
   # docker-compose -p ixian start
-  local container_ids=`docker ps -a --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
+  local container_ids=`$DOCKER_CMD ps -a --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort`
   for item in $container_ids
   do
-    docker start "$item"
+    $DOCKER_CMD start "$item"
   done
 }
 
 stop()
 {
   echo "Stopping Ixian containers..."
-  docker-compose -p ixian stop
+  $DOCKER_COMPOSE_CMD -p ixian stop
 }
 
 build()
 {
   echo "Building Ixian containers..."
-  docker-compose -p ixian build --no-cache
+  $DOCKER_COMPOSE_CMD -p ixian build --no-cache
 }
 
 execute()
@@ -92,7 +95,7 @@ execute()
 
   local container_name=$1
   shift
-  docker-compose -p ixian exec -T $container_name "$@"
+  $DOCKER_COMPOSE_CMD -p ixian exec -T $container_name "$@"
 }
 
 update()
@@ -101,14 +104,14 @@ update()
 
   echo "Updating Ixian containers..."
 
-  local container_ids=`docker ps --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort | grep "$service_name"`
+  local container_ids=`$DOCKER_CMD ps --format 'table {{.Names}}' | grep "ixian-" | sort --version-sort | grep "$service_name"`
   for item in $container_ids
   do
     echo -n "Updating $item... "
-    docker exec "$item" "./update.sh"
+    $DOCKER_CMD exec "$item" "./update.sh"
 
     echo -n "Restarting container "
-    docker restart $item
+    $DOCKER_CMD restart $item
   done
 }
 
@@ -129,40 +132,40 @@ updateFromLocal()
 
   echo "Updating Ixian containers '$service_name' from '$src_path'..."
 
-  local container_ids=`docker ps --format 'table {{.Names}}' | grep -i "ixian-" | sort --version-sort | grep -i "$service_name"`
+  local container_ids=`$DOCKER_CMD ps --format 'table {{.Names}}' | grep -i "ixian-" | sort --version-sort | grep -i "$service_name"`
   local tar_cmd='tar --exclude=*/bin --exclude=*/obj --exclude=./.git --exclude=*/.vs --exclude=*/packages --exclude=*/TestClients --exclude=*/TestResults -c -O -C'
   for item in $container_ids
   do
     echo -n "Copying files to $item... "
 
     if echo $item | grep -iq "DLT"; then
-      $tar_cmd $src_path/Ixian-Core . | docker cp - $item:/opt/Ixian/Ixian-Core
-      $tar_cmd $src_path/Ixian-DLT . | docker cp - $item:/opt/Ixian/Ixian-DLT
-      docker exec $item sh -c 'cd /opt/Ixian/Ixian-DLT/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
+      $tar_cmd $src_path/Ixian-Core . | $DOCKER_CMD cp - $item:/opt/Ixian/Ixian-Core
+      $tar_cmd $src_path/Ixian-DLT . | $DOCKER_CMD cp - $item:/opt/Ixian/Ixian-DLT
+      $DOCKER_CMD exec $item sh -c 'cd /opt/Ixian/Ixian-DLT/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
     fi
 
     if echo $item | grep -iq "S2"; then
-      $tar_cmd $src_path/Ixian-Core . | docker cp - $item:/opt/Ixian/Ixian-Core
-      $tar_cmd $src_path/Ixian-S2 . | docker cp - $item:/opt/Ixian/Ixian-S2
-      docker exec $item sh -c 'cd /opt/Ixian/Ixian-S2/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
+      $tar_cmd $src_path/Ixian-Core . | $DOCKER_CMD cp - $item:/opt/Ixian/Ixian-Core
+      $tar_cmd $src_path/Ixian-S2 . | $DOCKER_CMD cp - $item:/opt/Ixian/Ixian-S2
+      $DOCKER_CMD exec $item sh -c 'cd /opt/Ixian/Ixian-S2/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
     fi
 
     if echo $item | grep -iq "Lite-Wallet"; then
-      $tar_cmd $src_path/Ixian-Core . | docker cp - $item:/opt/Ixian/Ixian-Core
-      $tar_cmd $src_path/Ixian-LiteWallet . | docker cp - $item:/opt/Ixian/Ixian-LiteWallet
-      docker exec $item sh -c 'cd /opt/Ixian/Ixian-LiteWallet/IxianLiteWallet/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
+      $tar_cmd $src_path/Ixian-Core . | $DOCKER_CMD cp - $item:/opt/Ixian/Ixian-Core
+      $tar_cmd $src_path/Ixian-LiteWallet . | $DOCKER_CMD cp - $item:/opt/Ixian/Ixian-LiteWallet
+      $DOCKER_CMD exec $item sh -c 'cd /opt/Ixian/Ixian-LiteWallet/IxianLiteWallet/ && dos2unix rebuild.sh && /bin/sh rebuild.sh'
     fi
 
     if echo $item | grep -iq "Explorer"; then
-      $tar_cmd $src_path/Ixian-Explorer . | docker cp - $item:/var/www/html/
+      $tar_cmd $src_path/Ixian-Explorer . | $DOCKER_CMD cp - $item:/var/www/html/
     fi
 
     if echo $item | grep -iq "Pool"; then
-      $tar_cmd $src_path/Ixian-Pool . | docker cp - $item:/var/www/html/
+      $tar_cmd $src_path/Ixian-Pool . | $DOCKER_CMD cp - $item:/var/www/html/
     fi
 
     echo -n "Restarting container "
-    docker restart $item
+    $DOCKER_CMD restart $item
   done
 }
 
@@ -254,8 +257,8 @@ sandbox()
   esac
 }
 
-if ! [ -x "$(command -v docker-compose)" ]; then
-  echo -e "\x1B[41mError\x1B[0m: docker-compose is not installed." >&2
+if ! [ -x "$(command -v $DOCKER_COMPOSE_CMD)" ]; then
+  echo -e "\x1B[41mError\x1B[0m: $DOCKER_COMPOSE_CMD is not installed." >&2
   exit 1
 fi
 

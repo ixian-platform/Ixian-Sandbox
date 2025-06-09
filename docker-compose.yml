@@ -54,10 +54,9 @@ services:
     #  mode: replicated
     #  replicas: 6
     networks:
-      ixian_macvlan:
-        ipv4_address: 10.24.231.2
+      - ixian_macvlan
 
-      
+
   ixian-s2:
     build:
       context: ./ixian-s2/
@@ -103,6 +102,10 @@ services:
       #GENESIS_FILE: ""
       #WALLET_FILE: ""
       #WALLET_PASSWORD: ""
+    networks:
+      ixian_macvlan:
+        ipv4_address: 10.24.231.2
+
 
   ixian-explorer:
     build:
@@ -116,6 +119,10 @@ services:
       - "443:443"
     expose:
       - "443"
+    networks:
+      ixian_macvlan:
+        ipv4_address: 10.24.231.3
+
 
   ixian-pool:
     build:
@@ -133,6 +140,10 @@ services:
       - "444:443"
     expose:
       - "444"
+    networks:
+      ixian_macvlan:
+        ipv4_address: 10.24.231.4
+
 
 networks:
   ixian_macvlan:
@@ -143,4 +154,4 @@ networks:
       config:
         - subnet: 10.24.0.0/16
           gateway: 10.24.0.2
-          ip_range: 10.24.231.0/24
+          ip_range: 10.24.232.128/25

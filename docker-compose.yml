@@ -22,6 +22,10 @@ services:
     expose:
       - "8081"
       - "10234"
+    networks:
+      ixian_macvlan:
+        ipv4_address: 10.24.231.1
+
       
   ixian-dlt-2:
     hostname: ixian-dlt-2
@@ -49,6 +53,10 @@ services:
     #deploy:
     #  mode: replicated
     #  replicas: 6
+    networks:
+      ixian_macvlan:
+        ipv4_address: 10.24.231.2
+
       
   ixian-s2:
     build:
@@ -75,6 +83,9 @@ services:
     deploy:
       mode: replicated
       replicas: 10
+    networks:
+      - ixian_macvlan
+
       
   ixian-lite-wallet:
     #entrypoint: [ "sleep", "infinity" ]
@@ -122,3 +133,14 @@ services:
       - "444:443"
     expose:
       - "444"
+
+networks:
+  ixian_macvlan:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 10.24.0.0/16
+          gateway: 10.24.0.2
+          ip_range: 10.24.231.0/24

@@ -47,7 +47,7 @@ if [ "$NETWORK_TYPE" = "MAINNET" ]; then
 elif [ "$NETWORK_TYPE" = "TESTNET" ]; then
   ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t $IXI_CHECKSUMLOCK_CMD
 elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
-  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT -t $IXI_CHECKSUMLOCK_CMD
+  ./IxianS2 --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $S2_PORT --networkType "$NETWORK_TYPE" $IXI_CHECKSUMLOCK_CMD
 else
   echo "Error, no NETWORK_TYPE is specified."
 fi

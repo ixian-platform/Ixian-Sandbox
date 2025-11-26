@@ -45,7 +45,7 @@ elif [ "$NETWORK_TYPE" = "TESTNET" ]; then
   ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" $SEED_NODE_CMD -p $DLT_PORT -t $IXI_CHECKSUMLOCK_CMD
 elif [ "$NETWORK_TYPE" = "REGTEST" ]; then
   if [ "$GENESIS_FUNDS" != "" ]; then
-    if [ -d "data-testnet" ]; then
+    if [ -d "data-regnet" ]; then
       # Genesis already generated
       ./IxianDLT --verboseOutput --walletPassword "$WALLET_PASSWORD" -n "localhost:1" -p $DLT_PORT --recover --networkType "$NETWORK_TYPE" $IXI_CHECKSUMLOCK_CMD
     else

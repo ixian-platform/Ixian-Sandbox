@@ -19,4 +19,4 @@ git clone -b "$DLT_BRANCH" "$URL/Ixian-DLT.git"
 cd Ixian-DLT
 sh rebuild.sh
 
-echo "apiBind = http://*:8081/" > ~/Ixian/Ixian-DLT/IxianDLT/bin/Release/net8.0/ixian.cfg
+echo "apiBind = http://*:8081/" > ~/Ixian/Ixian-DLT/IxianDLT/bin/Release/net10.0/ixian.cfg

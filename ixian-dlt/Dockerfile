@@ -1,6 +1,6 @@
-FROM ixian-base:24.04-0.4
+FROM ixian-base:24.04-0.5
 
-LABEL version="0.4"
+LABEL version="0.5"
 LABEL description="Ixian DLT Docker Container"
 
 ENV HOME=/opt

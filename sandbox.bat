@@ -3,7 +3,7 @@
 setlocal
 title Ixian Sandbox
 
-set BASENAME=ixian-base:24.04
+set BASENAME=ixian-base:24.04-0.5
 
 call :sandbox %*
 

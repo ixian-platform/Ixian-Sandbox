@@ -19,4 +19,4 @@ git clone -b "$S2_BRANCH" "$URL/Ixian-S2.git"
 cd Ixian-S2
 sh rebuild.sh
 
-echo "apiBind = http://*:8081/" > ~/Ixian/Ixian-S2/IxianS2/bin/Release/net8.0/ixian.cfg
+echo "apiBind = http://*:8081/" > ~/Ixian/Ixian-S2/IxianS2/bin/Release/net10.0/ixian.cfg

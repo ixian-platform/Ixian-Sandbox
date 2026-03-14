@@ -11,7 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # MIT License for more details.
 
-VERSION=0.4
+VERSION=0.5
 
 BASENAME=ixian-base:24.04-$VERSION
 

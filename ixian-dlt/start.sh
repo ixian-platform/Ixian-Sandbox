@@ -14,14 +14,14 @@ if [ -f "update.next" ]; then
 fi
 
 if [ "$WALLET_FILE" != "" ]; then
-  cp $WALLET_FILE /opt/Ixian/Ixian-DLT/IxianDLT/bin/Release/net8.0/ixian.wal
+  cp $WALLET_FILE /opt/Ixian/Ixian-DLT/IxianDLT/bin/Release/net10.0/ixian.wal
 fi
 
 if [ "$WALLET_PASSWORD" = "" ]; then
   WALLET_PASSWORD="WALLETPASSWORD123"
 fi
 
-cd ~/Ixian/Ixian-DLT/IxianDLT/bin/Release/net8.0
+cd ~/Ixian/Ixian-DLT/IxianDLT/bin/Release/net10.0
 
 SEED_NODE_CMD=""
 if [ "$SEED_NODE" != "" ]; then
